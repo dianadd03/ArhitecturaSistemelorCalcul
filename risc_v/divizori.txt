@@ -1,0 +1,58 @@
+.data
+    n:.word 6
+    str:.asciz " "
+.text
+main:
+    lw t0, n
+    addi sp, sp, -4
+    sw t0, 0(sp)
+    call proc
+    addi sp, sp, 4
+    
+    li a7, 1
+    ecall
+    
+exit:
+    li a7, 93
+    li a0, 0
+    ecall
+
+proc:
+    addi sp, sp, -4
+    sw ra, 0(sp)
+    addi sp, sp, -4
+    sw s0, 0(sp)
+    addi s0, sp, 0
+    lw t1, 8(s0)
+    li a1, 0
+    addi sp, sp, -4
+    sw s1, 0(sp)
+    li s1, 1
+et_loop:
+    bgt s1, t1, proc_exit
+    
+    rem a2, t1, s1 
+    beq a2, zero, count
+cont:
+    addi s1, s1, 1
+    j et_loop
+count:
+    addi a1, a1, 1
+    li a7, 1
+    addi a0, s1, 0
+    ecall
+    li a7, 4
+    la a0, str
+    ecall
+    j cont
+proc_exit:
+    lw s1, -4(s0)
+    lw ra, 4(s0)
+    lw s0, 0(s0)
+    addi sp, sp, 12
+    addi a0, a1, 0
+    ret
+
+
+
+
